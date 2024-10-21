@@ -2,46 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserMonitoring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function login(Request $request)
+
+    //Criando novos usuarios.
+    public function create(Request $request)
     {
-        // Validar as credenciais fornecidas
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $validatedData = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:user_monitoring',
+            'password' => 'required|string|min:8',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        $validatedData['password'] = Hash::make($validatedData['password']);
 
-            return redirect()->intended('dashboard');
-        }
+        $user = UserMonitoring::create($validatedData);
 
-        // Se a autenticação falhar, retornar com um erro
-        return response()->json([
-            'status' => 0,
-            'message' => 'As credenciais fornecidas estão incorretas.'
-        ], 401);
+        return response()->json(['message' => 'Usuário criado com sucesso!']);
     }
 
-    // Função de logout
+    public function login(Request $request)
+    { 
+        try {
+            $credentials = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
+    
+            if (Auth::guard('user_monitoring')->attempt($credentials)) {
+                $user = Auth::guard('user_monitoring')->user();
+                $token = $user->createToken('TokenName')->plainTextToken;
+    
+                return response()->json([
+                    'status' => 1,
+                    'message' => 'Login bem-sucedido!',
+                    'Bearer Token' => $token, 
+                ]);
+            }
+    
+            return response()->json([
+                'status' => 0,
+                'message' => 'As credenciais fornecidas estão incorretas.'
+            ], 401);
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Erro ao realizar login.' . $e->getMessage()
+            ],500);
+        }
+    }
+
     public function logout(Request $request)
     {
-        // Realizar logout do usuário
         Auth::logout();
 
-        // Invalidar a sessão
         $request->session()->invalidate();
 
-        // Regenerar o token CSRF
         $request->session()->regenerateToken();
 
-        // Redirecionar para a página de login ou inicial
         return redirect('/login');
     }
 }

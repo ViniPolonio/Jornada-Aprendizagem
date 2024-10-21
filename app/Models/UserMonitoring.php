@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable; // Use este
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class UserMonitoring extends Model
+class UserMonitoring extends Authenticatable // Mude para Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens;
+
+    protected $table = 'user_monitoring';
+    protected $connection = 'mysql';
 
     protected $fillable = [
         'id', 
@@ -19,5 +23,10 @@ class UserMonitoring extends Model
         'remember_token',
         'created_at',
         'updated_at',
+    ];
+
+    protected $hidden = [
+        'password', // Ocultar o campo de senha
+        'remember_token',
     ];
 }

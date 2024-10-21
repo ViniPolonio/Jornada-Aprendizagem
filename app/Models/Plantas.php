@@ -20,4 +20,15 @@ class Plantas extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public static function returnAllPlants () 
+    {
+        try {
+            $data = Plantas::whereNull('deleted_at')->get();
+            return $data;
+
+        } catch (\Exception $e) {
+            return response (['error' => $e->getMessage()], 500);
+        } 
+    } 
 }

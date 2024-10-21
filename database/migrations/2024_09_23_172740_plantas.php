@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('jornada.plantas', function (Blueprint $table) {
             $table->id();
             $table->string('name_planta')->comment('Nome identificador da planta');
+            $table->integer('status')->default(1)->comment('1 Ativo \ 0 Inativo');
             $table->longText('description')->comment('Descrição detalhada da planta')->nullable();
             $table->longText('image_one')->comment('Imagem da planta')->nullable();
             $table->longText('image_two')->comment('Imagem da planta')->nullable();

@@ -40,7 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'user_monitoring' => [
+            'driver' => 'session',
+            'provider' => 'user_monitorings',
+        ],
     ],
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -64,12 +69,12 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'user_monitorings' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\UserMonitoring::class,
+        ],
     ],
+    
 
     /*
     |--------------------------------------------------------------------------
