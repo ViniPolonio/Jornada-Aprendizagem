@@ -31,6 +31,20 @@ class PlantasController extends Controller
         } 
     }
 
+    public function update (Request $request, $id) 
+    {
+        try {
+            $data = Plantas::find($id);
+            $data->status = $request->status;
+            
+            $data->save();
+            return response (['success' => 'Planta atualizada com sucesso!'], 200);
+
+        } catch (\Exception $e) {
+            return response (['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function show($id) 
     {
         try {
@@ -48,4 +62,20 @@ class PlantasController extends Controller
             return response (['error' => $e->getMessage()], 500);
         }
     }
+
+    public function store () {
+        try {
+            $data = Plantas::create([
+                'name_planta'   => request('name'),
+                'description'   => request('description'),
+                'interval_type' => request('interval_type'),
+                'interval_time' => request('interval_time'),
+            ]);
+
+            return response (['success' => 'Planta criada com sucesso!'], 200);
+        
+        } catch (\Exception $e) {
+            return response (['error' => $e->getMessage()], 500);
+        } 
+    } 
 }

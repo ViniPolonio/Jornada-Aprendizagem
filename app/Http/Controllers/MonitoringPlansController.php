@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Plantas;
 use Illuminate\Http\Request;
 use App\Models\MonitoringPlans;
 
@@ -25,13 +26,29 @@ class MonitoringPlansController extends Controller
         return response()->json(['message' => 'Dados salvos com sucesso!'], 200);
     }
 
-    public function returnDataPlant($id) {
+    public function returnDataPlant($id, Request $request) {
         try {
-            $data = MonitoringPlans::where('id_plant', $id)->get();
-            return $data;
-        
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $name_planta = Plantas::find($id)->name_planta;
+
+            if (!$startDate || !$endDate) {
+                return response(['error' => 'As datas de início e término são obrigatórias.'], 400);
+            }
+            
+            \Carbon\Carbon::setLocale('pt_BR');
+            $startDate = \Carbon\Carbon::parse($startDate);
+            $endDate = \Carbon\Carbon::parse($endDate);
+            $data = MonitoringPlans::where('id_plant', $id)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->get();
+    
+            return response()->json(['status' => 1,'name_planta' => $name_planta, 'data' => $data]);
+    
         } catch (\Exception $e) {
-            return response (['error' => $e->getMessage()], 500);
+            dd($e);
+            return response(['error' => $e->getMessage()], 500);
         }
     }
+    
 }

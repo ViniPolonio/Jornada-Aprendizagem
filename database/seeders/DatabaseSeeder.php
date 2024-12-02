@@ -8,7 +8,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Aqui você registra o seeder que deseja rodar
         $this->call(MonitoringPlansSeeder::class);
     }
 }

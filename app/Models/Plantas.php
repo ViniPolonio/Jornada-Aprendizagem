@@ -19,6 +19,8 @@ class Plantas extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'interval_type',
+        'interval_time',
     ];
 
     public static function returnAllPlants () 
