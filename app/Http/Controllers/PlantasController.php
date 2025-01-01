@@ -12,7 +12,8 @@ class PlantasController extends Controller
     public function index () {
         try {
             $data = Plantas::returnAllPlants();
-            return $data;
+            
+            return response()->json(['data' => $data]);
         
         } catch (\Exception $e) {
             return response (['error' => $e->getMessage()], 500);

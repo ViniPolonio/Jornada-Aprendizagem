@@ -32,12 +32,10 @@ class MonitoramentoPlantasCommand extends Command
                         'umidade' => $dadosAsp32['umidade'],
                     ]);
     
-                    // Atualiza o campo 'updated_at' da planta
                     $planta->update([
                         'updated_at' => Carbon::now(),
                     ]);
                 } else {
-                    // Adicionando mensagem informando que a planta não está no tempo de consulta
                     $this->info("A planta {$planta->name_planta} não está no intervalo correto para consulta.");
                 }
             }
@@ -77,7 +75,7 @@ class MonitoramentoPlantasCommand extends Command
 
     protected function consultarDadosAsp32(Plantas $planta)
     {
-        $esp32Ip = 'http://192.168.1.13';
+        $esp32Ip = 'http://172.20.10.3';
 
         try {
             $response = Http::timeout(4)->get($esp32Ip . '/dados');

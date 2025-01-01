@@ -15,8 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:MonitoramentoPlantasCommand')->everyFiveMinutes();    }
-
+        $schedule->command('command:MonitoramentoPlantasCommand')->everyFiveMinutes();
+    }
     /**
      * Register the commands for the application.
      *

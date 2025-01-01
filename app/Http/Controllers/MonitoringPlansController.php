@@ -22,7 +22,6 @@ class MonitoringPlansController extends Controller
             'umidade'     => $validated['umidade'],
         ]);
 
-        // Retornar resposta JSON
         return response()->json(['message' => 'Dados salvos com sucesso!'], 200);
     }
 
@@ -39,6 +38,9 @@ class MonitoringPlansController extends Controller
             \Carbon\Carbon::setLocale('pt_BR');
             $startDate = \Carbon\Carbon::parse($startDate);
             $endDate = \Carbon\Carbon::parse($endDate);
+
+            // $data = MonitoringPlans::where('id_plant', $id)->orderByDesc('created_at')->get();
+
             $data = MonitoringPlans::where('id_plant', $id)
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->get();
@@ -46,9 +48,7 @@ class MonitoringPlansController extends Controller
             return response()->json(['status' => 1,'name_planta' => $name_planta, 'data' => $data]);
     
         } catch (\Exception $e) {
-            dd($e);
             return response(['error' => $e->getMessage()], 500);
         }
     }
-    
 }

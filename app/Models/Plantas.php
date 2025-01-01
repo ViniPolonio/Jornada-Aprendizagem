@@ -23,14 +23,32 @@ class Plantas extends Model
         'interval_time',
     ];
 
-    public static function returnAllPlants () 
+    public function lastMonitoringPlan()
+    {
+        return $this->hasOne(MonitoringPlans::class, 'id_plant')->latestOfMany();
+    }
+
+    public static function returnAllPlants()
     {
         try {
-            $data = Plantas::whereNull('deleted_at')->get();
+            $data = Plantas::whereNull('deleted_at')
+                ->with(['lastMonitoringPlan' => function ($query) {
+                    $query->select(
+                        'monitoring_plans.id', 
+                        'monitoring_plans.id_plant', 
+                        'monitoring_plans.temperatura', 
+                        'monitoring_plans.umidade', 
+                        'monitoring_plans.created_at'
+                    );
+                }])
+                ->get();
+
+
             return $data;
 
         } catch (\Exception $e) {
-            return response (['error' => $e->getMessage()], 500);
-        } 
-    } 
+            return response(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }
